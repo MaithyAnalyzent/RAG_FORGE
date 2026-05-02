@@ -1,0 +1,34 @@
+embedding:
+  model: "sentence-transformers/all-MiniLM-L6-v2"
+  batch_size: 32
+  normalize: true
+
+chunking:
+  chunk_size: 512
+  chunk_overlap: 64
+  separators: ["\n\n", "\n", ". ", " ", ""]
+
+retrieval:
+  strategy: "hybrid"       # dense | bm25 | hybrid
+  dense_weight: 0.7
+  bm25_weight: 0.3
+  top_k: 10                # candidates retrieved before re-ranking
+  final_top_k: 5           # chunks kept after re-ranking
+  rrf_k: 60                # RRF constant (higher = smoother fusion)
+
+reranking:
+  enabled: true
+  model: "cross-encoder/ms-marco-MiniLM-L-6-v2"
+  top_k: 5
+
+llm:
+  provider: "ollama"       # ollama | openai | anthropic
+  model: "llama2"
+  temperature: 0.1
+  max_tokens: 512
+  endpoint: "http://localhost:11434"
+  api_key_env: null        # env var name for API key (e.g. "OPENAI_API_KEY")
+
+storage:
+  index_dir: "data/index"
+  db_path: "data/sessions.db"
